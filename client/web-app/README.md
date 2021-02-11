@@ -1,6 +1,8 @@
-# Certificate Engine- WebApp
+# Certificate Engine-WebApp
 
-This is a development repository of Certificate Engine for House Of Geeks , the Technical Society of [Indian Institute of Information Technology, Ranchi](http://iiitranchi.ac.in/).
+![1](https://github.com/prskid1000/AttenBuddy/blob/master/Preview/1.png?raw=true)
+
+![2](https://github.com/prskid1000AttenBuddy/blob/master/Preview/2.png?raw=true)
 
 ## Getting Started
 
