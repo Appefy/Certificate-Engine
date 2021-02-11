@@ -1,8 +1,8 @@
 # Certificate-Engine-Mobile
 
-![2](https://github.com/Appefy/Certificate-Engine-Parent/tree/main/client/android_app/Preview/1.jpg?raw=true)
+![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/1.jpg?raw=true)
 
-![2](https://github.com/Appefy/Certificate-Engine-Parent/tree/main/client/android_app/Preview/2.jpg?raw=true)
+![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/2.jpg?raw=true)
 
 ## Getting Started
 
