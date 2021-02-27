@@ -29,7 +29,7 @@ class DGenerate extends React.Component {
 
   handleSubmit(event) {
 
-    axios.post("https://cehg.herokuapp.com/data", { 'etitle': this.state.name, 'ftitle': this.state.form },
+    axios.post("http://localhost:3001/data", { 'etitle': this.state.name, 'ftitle': this.state.form },
       { responseType: 'arraybuffer' })
       .then(res => {
 
