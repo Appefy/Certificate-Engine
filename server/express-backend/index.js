@@ -49,7 +49,7 @@ app.post('/getsheet', attendance.getSheet);
 app.post('/certificate', download.downloadCertificate);
 app.post('/sheet', download.downloadSheet);
 app.post('/data', download.downloadData);
-
+app.post('/verify', download.verifyCertificate)
 
 app.listen(process.env.PORT || 3001,
     () => console.log("Server is running..."));
