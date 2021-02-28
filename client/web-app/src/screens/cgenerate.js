@@ -48,7 +48,7 @@ class CGenerate extends React.Component {
     data.append("type", this.state.type);
     data.append("files", this.state.file);
 
-    axios.post("http://localhost:3001/certificate", data,
+    axios.post("https://cehg.herokuapp.com/certificate", data,
       { responseType: 'arraybuffer' })
       .then(res => {
 
@@ -125,8 +125,8 @@ class CGenerate extends React.Component {
                       <option>Choose</option>
                       <option>Winner</option>
                       <option>Runner Up</option>
-                      <option>Participaton</option>
-                      <option>Attendance</option>
+                      <option>Participation</option>
+                      <option>Attandance</option>
                       
                     </Form.Control>
                   </Form.Row>

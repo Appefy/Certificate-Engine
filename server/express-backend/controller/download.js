@@ -5,6 +5,9 @@ const doc = new PDFDocument();
 var zip = require('express-zip');
 var pdf = require('html-pdf-node');
 const fzip  = require('zip-a-folder');
+const lineReader = require('line-reader');
+
+
 
 const removeDir = function(path) {
   if (fs.existsSync(path)) {
@@ -134,35 +137,102 @@ exports.downloadData = (req, res, next) => {
 };
 
 exports.verifyCertificate = (req, res, next) => {
+
+    var Model = require('../model/certificate');
+    console.log(req.query.uid);
+    Model.findOne({ uid: req.query.uid }, async function (err, docs) {
+        if (err || !docs) {
+            res.json({ success: 'False' });
+        } else {
+            
+            await fs.writeFile(docs.file.name, docs.file.file, 'binary', async () => {
+                await fs.readFile(docs.file.name, (error, data) => { 
+                    if (error) {
+                        res.writeHead(404);
+                        res.write('Certificate Not Found');
+                    } else {
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.write(data);
+                    }
+                    res.end();
+                    fs.unlink(docs.file.name, () => {});
+                });
+            });
+
+        }
+    });
+}
+
+var Certificate = (verfiyLink, cname, title, name) => {
+    var file = {
+        content: `<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Certificate</title>
+    <style>
+
+    #certificate{background: linear-gradient(#c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 0%, rgba(255,255,255,0) 0) 55px 0 #FFF;background-size: 10.5in 8in;background-repeat: repeat-x;}
+    body{ margin: 0;}
     
+    @media print {
+        table{background: linear-gradient(#c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 0%, rgba(255,255,255,0) 0) 55px 0 #FFF;background-size: 10.5in 8in;background-repeat: repeat-x; -webkit-print-color-adjust: exact; }
+    }
+    
+    @page {
+        margin-top: 0.5cm;
+        margin-bottom: 2cm;
+        margin-left: 2cm;
+        margin-right: 2cm;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="certificate-container" style="background:#f9f9f9">
+        <table id="certificate" style="width: 11in;margin: 0 auto;text-align: center;padding: 10px;border-style: groove;border-width: 20px;outline: 5px dotted #000;height: 8.5in;outline-offset: -26px;outline-style: double;border-color: #9d8b00;">
+            <tr>
+                <td><h1 style="font-size: 0.6in; margin: 0; color: #000;">` + cname +`</h1><h3 style="margin: 0;font-size: 0.25in;color: black;text-transform: uppercase;font-family: sans-serif;">`+ title + `</h3> <p style="font-size: 0.2in;text-transform: uppercase;color: #494000;">Is hereby granted to :</p></td>
+            </tr>
+            <tr>
+                <td>
+                    <h2 style="color: #fff; font-size: 0.4in;margin: 10px 0 0 0; font-family: sans-serif;text-transform: uppercase;">` + name + `</h2>
+                </td>
+            </tr>
+            <tr>
+                <td><img src="profile-pic.jpg" alt="" style="max-width: 100%;margin: 0 auto;display: block;border-width: 5px;border-style: double;border-color: #333;box-shadow: 0 5px 10px rgba(0,0,0,0.3);"></td>
+            </tr>
+            <tr>
+                <td>
+                    <h5 style="margin:0; font-size: 0.32in;font-family: sans-serif;color: #000;">House Of Geeks</h5>
+                    <h5  style="margin: 5px 0 0px; font-size: 0.16in;font-family: sans-serif;color: #000;">Technical Society</h5>
+                    <h5  style="margin: 5px 0 0px; font-size: 0.16in;font-family: sans-serif;color: #000;">of</h5>
+                    <h5  style="margin: 5px 0 40px; font-size: 0.16in;font-family: sans-serif;color: #000;">IIIT Ranchi</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   <img src="logo.png" alt="" style="max-width:100%;">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h6 style="margin: 10px 0 10px; font-family: sans-serif;font-size: 0.16in;">Verification Link</h6>
+                    <em><a href="` + verfiyLink + `">` + verfiyLink + `</a></em>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>`};
+
+return file;
 }
 
-var genTypeOne = () => {
-
-}
-
-var genTypeTwo = () => {
-
-}
-
-var genTypeThree = () => {
-    res.send({});
-}
-
-var genTypeFour = async (req, res, sheet) => {
-    var rep = []
-
-    console.log(sheet);
-
-    for (i of sheet.data) {
-
-        //if (i['id'] === "0" || i['presence'] === "0") continue;
-
-        var uid = (+new Date).toString(36);
-        var verfiyLink = "http://localhost:3001/verfiy?uid=" + uid;
-
-        var file = {
-            content: `<html lang="en">
+var HCertificate = (verfiyLink, cname, title, name) => {
+    var file = {
+        content: `<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -197,11 +267,11 @@ var genTypeFour = async (req, res, sheet) => {
     <div class="certificate-container" style="background:#f9f9f9">
         <table id="certificate" style="width: 11in;margin: 0 auto;text-align: center;padding: 10px;border-style: groove;border-width: 20px;outline: 5px dotted #000;height: 8.5in;outline-offset: -26px;outline-style: double;border-color: #9d8b00;">
             <tr>
-                <td><h1 style="font-size: 0.6in; margin: 0; color: #000;">Attendance Certificate</h1><h3 style="margin: 0;font-size: 0.25in;color: black;text-transform: uppercase;font-family: sans-serif;">`+ req.body.title +`</h3> <p style="font-size: 0.2in;text-transform: uppercase;color: #494000;">Is hereby granted to :</p></td>
+                <td><h1 style="font-size: 0.6in; margin: 0; color: #000;">` + cname +`</h1><h3 style="margin: 0;font-size: 0.25in;color: black;text-transform: uppercase;font-family: sans-serif;">`+ title + `</h3> <p style="font-size: 0.2in;text-transform: uppercase;color: #494000;">Is hereby granted to :</p></td>
             </tr>
             <tr>
                 <td>
-                    <h2 style="color: #fff; font-size: 0.4in;margin: 10px 0 0 0; font-family: sans-serif;text-transform: uppercase;">` + i['id'] + `</h2>
+                    <h2 style="color: #fff; font-size: 0.4in;margin: 10px 0 0 0; font-family: sans-serif;text-transform: uppercase;">` + name + `</h2>
                 </td>
             </tr>
             <tr>
@@ -223,7 +293,7 @@ var genTypeFour = async (req, res, sheet) => {
             <tr>
                 <td>
                     <h6 style="margin: 10px 0 10px; font-family: sans-serif;font-size: 0.16in;">Verification Link</h6>
-                    <em>` +  verfiyLink + `</em>
+                    <em><a href="` + verfiyLink +`">` + verfiyLink + `</a></em>
                 </td>
             </tr>
         </table>
@@ -231,10 +301,134 @@ var genTypeFour = async (req, res, sheet) => {
 </body>
 </html>`};
 
+return file;
+}
+
+var genTypeOne = async (req, res, sheet) =>{
+
+    var rep = []
+
+    for (i of sheet) {
+
+        var uid = (+new Date).toString(36);
+        var verfiyLink = "https://cehg.herokuapp.com/verify?uid=" + uid;
+
+        console.log(verfiyLink);
+
+        var file = Certificate(verfiyLink, "Participation Certificate", req.body.title, i);
+
+        var options = { path: i + '.pdf', format: 'Tabloid' }
+        await pdf.generatePdf(file, options).then(buf => {
+            var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i).content);
+            var bufArray = { name: i + '.html', file: fileBuffer };
+            var Certificate = require('../model/certificate');
+            var model = new Certificate({
+                uid: uid,
+                file: bufArray
+            });
+            model.save();
+        });
+        rep.push({ path: i + '.pdf', name: i })
+    }
+
+    await res.zip(rep, "certificate.zip", () => {
+        for (i of sheet) {
+            fs.unlink(i + '.pdf', (err) => {
+            });
+        }
+    });
+}
+
+var genTypeTwo = async (req, res, sheet) => {
+
+    var rep = []
+
+    for (i of sheet) {
+
+        var uid = (+new Date).toString(36);
+        var verfiyLink = "https://cehg.herokuapp.com/verify?uid=" + uid;
+
+        console.log(verfiyLink);
+
+        var file = Certificate(verfiyLink, "Winner Certificate", req.body.title, i);
+
+        var options = { path: i + '.pdf', format: 'Tabloid' }
+        await pdf.generatePdf(file, options).then(buf => {
+            var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i).content);
+            var bufArray = { name: i + '.html', file: fileBuffer };
+            var Certificate = require('../model/certificate');
+            var model = new Certificate({
+                uid: uid,
+                file: bufArray
+            });
+            model.save();
+        });
+        rep.push({ path: i + '.pdf', name: i })
+    }
+
+    await res.zip(rep, "certificate.zip", () => {
+        for (i of sheet) {
+            fs.unlink(i + '.pdf', (err) => {
+            });
+        }
+    });
+}
+
+var genTypeThree = async(req, res, sheet) => {
+
+    var rep = []
+
+    for (i of sheet) {
+
+        var uid = (+new Date).toString(36);
+        var verfiyLink = "https://cehg.herokuapp.com/verify?uid=" + uid;
+
+        console.log(verfiyLink);
+
+        var file = Certificate(verfiyLink, "Runner Up Certificate", req.body.title, i);
+
+        var options = { path: i + '.pdf', format: 'Tabloid' }
+        await pdf.generatePdf(file, options).then(buf => {
+            var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i).content);
+            var bufArray = { name: i + '.html', file: fileBuffer };
+            var Certificate = require('../model/certificate');
+            var model = new Certificate({
+                uid: uid,
+                file: bufArray
+            });
+            model.save();
+        });
+        rep.push({ path: i + '.pdf', name: i })
+    }
+
+    await res.zip(rep, "certificate.zip", () => {
+        for (i of sheet) {
+            fs.unlink(i + '.pdf', (err) => {
+            });
+        }
+    });
+}
+
+var genTypeFour = async (req, res, sheet) => {
+    var rep = []
+
+    //console.log(sheet);
+
+    for (i of sheet.data) {
+
+        //if (i['id'] === "0" || i['presence'] === "0") continue;
+
+        var uid = (+new Date).toString(36);
+        var verfiyLink = "https://cehg.herokuapp.com/verify?uid=" + uid;
+
+        console.log(verfiyLink);
+
+        var file = Certificate(verfiyLink, "Attendance Certificate", req.body.title, i['id']);
+
         var options = { path: i['id'] + '.pdf', format: 'Tabloid' }
         await pdf.generatePdf(file, options).then(buf => {
-            var fileBuffer = Buffer.from(buf);
-            var bufArray = [{ name: i['id'] + '.pdf', mimetype: "text/html", file: fileBuffer }];
+            var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i['id']).content);
+            var bufArray = { name: i['id'] + '.html', file: fileBuffer };
             var Certificate = require('../model/certificate');
             var model = new Certificate({
                 uid: uid,
@@ -253,10 +447,22 @@ var genTypeFour = async (req, res, sheet) => {
     });
 }
 
-exports.downloadCertificate = (req, res, next) => {
+exports.downloadCertificate = async (req, res, next) => {
 
     var csv = req.files[0];
+    console.log(csv);
     var type = req.body.type;
+
+    if(type != "Attandance")
+    {
+        await fs.writeFile("data.txt", csv.buffer, 'binary', async () => {
+            csv = [];
+            await lineReader.eachLine("data.txt", async (line) => {
+                csv.push(line);
+            })
+            fs.unlink("data.txt", () => { });
+        });
+    }
 
     var Model = require('../model/attendance');
     Model.findOne({ title: req.body.title }, async function (err, sheet) {
@@ -267,15 +473,15 @@ exports.downloadCertificate = (req, res, next) => {
 
             switch (type) {
                 case "Participation":
-                    genTypeOne();
+                    genTypeOne(req, res, csv);
                     break;
                 case "Winner":
-                    genTypeTwo();
+                    genTypeTwo(req, res, csv);
                     break;
                 case "Runner Up":
-                    genTypeThree();
+                    genTypeThree(req, res, csv);
                     break;
-                case "Attendance":
+                case "Attandance":
                     await genTypeFour(req, res, sheet);
                     break;
             }

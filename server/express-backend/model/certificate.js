@@ -5,7 +5,7 @@ var CertificateSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    file: [{file: Buffer }]
+    file: {name:String,file: Buffer }
 });
 
 var Certificate = mongoose.model('Certificate', CertificateSchema);
