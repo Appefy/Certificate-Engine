@@ -1,10 +1,6 @@
-# Certificate-Engine-Mobile
+# android_app
 
-![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/1.jpg?raw=true)
-
-![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/2.jpg?raw=true)
-
-![3](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/3.jpg?raw=true)
+A new Flutter application.
 
 ## Getting Started
 
