@@ -4,6 +4,8 @@
 
 ![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/2.jpg?raw=true)
 
+![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/android_app/Preview/3.jpg?raw=true)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
