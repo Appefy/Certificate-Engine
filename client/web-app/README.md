@@ -24,6 +24,9 @@
 
 ![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/web-app/Preview/12.png?raw=true)
 
+![2](https://github.com/Appefy/Certificate-Engine-Parent/blob/main/client/web-app/Preview/13.png?raw=true)
+
+
 
 ## Getting Started
 

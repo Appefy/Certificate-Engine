@@ -3,9 +3,27 @@ const fs = require('fs');
 var QRCode = require('qrcode');
 const doc = new PDFDocument();
 var zip = require('express-zip');
-var pdf = require('html-pdf-node');
+var pdf = require('./pdf.js');
 const fzip  = require('zip-a-folder');
 const lineReader = require('line-reader');
+
+const distanceMargin = 18;
+const maxWidth = 140;
+const maxHeight = 70;
+const lineSize = 174;
+const signatureHeight = 390;
+const startLine1 = 128;
+const endLine1 = 128 + lineSize;
+const startLine2 = endLine1 + 32;
+const endLine2 = startLine2 + lineSize;
+const startLine3 = endLine2 + 32;
+const endLine3 = startLine3 + lineSize;
+
+function jumpLine(doc, lines) {
+    for (let index = 0; index < lines; index++) {
+        doc.moveDown();
+    }
+}
 
 
 
@@ -317,7 +335,7 @@ var genTypeOne = async (req, res, sheet) =>{
 
         var file = Certificate(verfiyLink, "Participation Certificate", req.body.title, i);
 
-        var options = { path: i + '.pdf', format: 'Tabloid' }
+        var options = { path: i + '.pdf', format: 'A4', landscape: true }
         await pdf.generatePdf(file, options).then(buf => {
             var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i).content);
             var bufArray = { name: i + '.html', file: fileBuffer };
@@ -352,7 +370,7 @@ var genTypeTwo = async (req, res, sheet) => {
 
         var file = Certificate(verfiyLink, "Winner Certificate", req.body.title, i);
 
-        var options = { path: i + '.pdf', format: 'Tabloid' }
+        var options = { path: i + '.pdf', format: 'A4', landscape: true }
         await pdf.generatePdf(file, options).then(buf => {
             var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i).content);
             var bufArray = { name: i + '.html', file: fileBuffer };
@@ -387,7 +405,7 @@ var genTypeThree = async(req, res, sheet) => {
 
         var file = Certificate(verfiyLink, "Runner Up Certificate", req.body.title, i);
 
-        var options = { path: i + '.pdf', format: 'Tabloid' }
+        var options = { path: i + '.pdf', format: 'A4', landscape: true }
         await pdf.generatePdf(file, options).then(buf => {
             var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i).content);
             var bufArray = { name: i + '.html', file: fileBuffer };
@@ -425,7 +443,7 @@ var genTypeFour = async (req, res, sheet) => {
 
         var file = Certificate(verfiyLink, "Attendance Certificate", req.body.title, i['id']);
 
-        var options = { path: i['id'] + '.pdf', format: 'Tabloid' }
+        var options = { path: i + '.pdf', format: 'A4', landscape: true }
         await pdf.generatePdf(file, options).then(buf => {
             var fileBuffer = Buffer.from(HCertificate(verfiyLink, "Attendance Certificate", req.body.title, i['id']).content);
             var bufArray = { name: i['id'] + '.html', file: fileBuffer };
