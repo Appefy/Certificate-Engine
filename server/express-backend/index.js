@@ -15,7 +15,7 @@ app.use(express.static('public'));
 
 
 var cors = require('cors');
-app.use(cors({ origin: true }));
+app.use(cors({origin: true}));
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));

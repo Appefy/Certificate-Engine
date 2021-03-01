@@ -48,6 +48,8 @@ class CGenerate extends React.Component {
     data.append("type", this.state.type);
     data.append("files", this.state.file);
 
+    
+
     axios.post("https://cehg.herokuapp.com/certificate", data,
       { responseType: 'arraybuffer' })
       .then(res => {

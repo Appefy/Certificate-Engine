@@ -416,7 +416,7 @@ var genTypeFour = async (req, res, sheet) => {
 
     for (i of sheet.data) {
 
-        //if (i['id'] === "0" || i['presence'] === "0") continue;
+        if (i['id'] === "0" || i['presence'] === "0") continue;
 
         var uid = (+new Date).toString(36);
         var verfiyLink = "https://cehg.herokuapp.com/verify?uid=" + uid;
@@ -450,7 +450,6 @@ var genTypeFour = async (req, res, sheet) => {
 exports.downloadCertificate = async (req, res, next) => {
 
     var csv = req.files[0];
-    console.log(csv);
     var type = req.body.type;
 
     if(type != "Attandance")
